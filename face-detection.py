@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import time
 faceCascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
 cap.set(3,640) # set Width
@@ -14,11 +15,16 @@ while True:
         minNeighbors=5,     
         minSize=(20, 20)
     )
+    i = 0
     for (x,y,w,h) in faces:
+        # time.sleep(3)
+        i+=1
         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
         roi_gray = gray[y:y+h, x:x+w]
-        roi_color = img[y:y+h, x:x+w]  
-    cv2.imshow('video',img)
+        roi_color = img[y:y+h, x:x+w]
+        recog_input = cv2.resize(roi_gray, (100,100))
+        cv2.imshow('video', recog_input)
+    # cv2.imshow('video',img)
     k = cv2.waitKey(30) & 0xff
     if k == 27: # press 'ESC' to quit
         break
