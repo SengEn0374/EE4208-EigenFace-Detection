@@ -1,5 +1,7 @@
 import numpy as np
 from numpy import savetxt
+from numpy import save
+from numpy import load
 from PIL import Image
 import cv2
 import torch
@@ -53,7 +55,9 @@ def main():
 
     # mean adjust all dimensions (pixels)
     mn = X.mean(axis=1).reshape(-1, 1)
-    # print(mn)
+    print(mn.shape)
+    return
+    save('allFaces_mean.npy', mn)
     print("mean matrix shape:", mn.shape)    # check : (num_pixels, one)
     X = X - mn    # X = RowDataAdjust in lec slides = mean adjusted pixel row matrix
 
@@ -72,7 +76,8 @@ def main():
 
     # numpy
     # start = time.time()
-    w, v = np.linalg.eigh(C)  # alternatively
+    print("Calculating eigenvectors...")
+    w, v = np.linalg.eigh(C)  # bottle neck here
     # elapsed = time.time() - start
     # print("np", elapsed)
 
@@ -95,14 +100,15 @@ def main():
 
     # dimension reduction
     v_reduc = v[:, 0:count]
-    # savetxt('reduce_eigvecs_col.csv', v, delimiter=',')
+    save('reduce_eigvecs_col.npy', v_reduc)  # save in binary for faster access
+    # savetxt('reduce_eigvecs_col.csv', v_reduc, delimiter=',')
     # print(v_reduc.shape)
 
     # get faces in reduced eigen space
     final_data = np.matmul(v_reduc.T, X)
     print(final_data.shape)  # (num_dim_left, num_samples)
 
-    # plot data
+    # plot data for visualising training
     # plt.scatter(final_data[0, :], final_data[1, :], final_data[2, :])   # plot top 2 principle components
     # plt.show()
     fig = plt.figure()
@@ -114,7 +120,11 @@ def main():
     ax.scatter(final_data[0, 20:24], final_data[1, 20:24], final_data[2, 20:24], marker="_")
     plt.show()
 
-    #
+    # test code, load reduced eigen vecs.npy data
+    eigenvecs = load("reduce_eigvecs_col.npy")
+    # check loaded is same as original saved
+    print(eigenvecs)
+    print(v_reduc)
 
     return
 
