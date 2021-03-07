@@ -16,6 +16,8 @@ if os.path.exists(save_dir) != True:
 # load eigen vectors
 eigenvecs = load("./reduce_eigvecs_col.npy")
 
+# load mean dataset
+mn = load('./allFaces_mean.npy')
 
 data_dir = './frontal_face_aligned'
 IDs = os.listdir(data_dir)
@@ -28,11 +30,13 @@ for ID in IDs:
         im_dir = os.path.join(ID_dir, img)
         if flg == 1:
             im_vec = cv2.imread(im_dir, 0).reshape(-1,1)
+            im_vec = im_vec - mn
             eig_face_sum = np.matmul(eigenvecs.T, im_vec)
             # print(eig_face.shape)
             flg = 0
         else:
             im_vec = cv2.imread(im_dir, 0).reshape(-1,1)
+            im_vec = im_vec - mn
             eig_face = np.matmul(eigenvecs.T, im_vec)
             eig_face_sum = eig_face_sum + eig_face
     avg = eig_face_sum/len(imgs)
