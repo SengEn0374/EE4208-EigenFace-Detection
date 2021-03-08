@@ -15,7 +15,7 @@ device = torch.device("cpu")
 
 def main():
     # load dataset
-    list_dir = './frontal_face_aligned.lst'
+    list_dir = './cfd_crop.lst'
     # list_dir = './56x56.lst'
     imgs_dir = open(list_dir, 'r')
     imgs = imgs_dir.read()
@@ -56,8 +56,7 @@ def main():
     # mean adjust all dimensions (pixels)
     mn = X.mean(axis=1).reshape(-1, 1)
     print(mn.shape)
-    return
-    save('allFaces_mean.npy', mn)
+    save('CFDFaces_mean.npy', mn)
     print("mean matrix shape:", mn.shape)    # check : (num_pixels, one)
     X = X - mn    # X = RowDataAdjust in lec slides = mean adjusted pixel row matrix
 
@@ -100,7 +99,7 @@ def main():
 
     # dimension reduction
     v_reduc = v[:, 0:count]
-    save('reduce_eigvecs_col.npy', v_reduc)  # save in binary for faster access
+    save('150_cfd__reduced_eigenvec.npy', v_reduc)  # save in binary for faster access
     # savetxt('reduce_eigvecs_col.csv', v_reduc, delimiter=',')
     # print(v_reduc.shape)
 
@@ -111,6 +110,7 @@ def main():
     # plot data for visualising training
     # plt.scatter(final_data[0, :], final_data[1, :], final_data[2, :])   # plot top 2 principle components
     # plt.show()
+    '''
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(final_data[0, 0:4], final_data[1, 0:4], final_data[2, 0:4], marker="o")
@@ -121,11 +121,11 @@ def main():
     plt.show()
 
     # test code, load reduced eigen vecs.npy data
-    eigenvecs = load("reduce_eigvecs_col.npy")
+    eigenvecs = load("cfd__reduced_eigenvec.npy")
     # check loaded is same as original saved
     print(eigenvecs)
     print(v_reduc)
-
+    '''
     return
 
 
