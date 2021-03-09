@@ -1,11 +1,11 @@
 import os
 
-# fp = './frontal_face_aligned.lst'
-fp = './56x56.lst'
+fp = './frontal_face_aligned.lst'
+# fp = './56x56.lst'
 f = open(fp, 'w')
 
 # dataset_path = './frontal_face_aligned'
-dataset_path = './56x56'
+dataset_path = './frontal_face_aligned'
 IDs = os.listdir(dataset_path)
 flg = 0
 for i, ID in enumerate(IDs):
