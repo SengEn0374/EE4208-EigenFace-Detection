@@ -1,5 +1,5 @@
 '''
-predict ID based on input image from haarcascade cropped frames, grabbed from face-detection.py
+predict images in folder recursively
 '''
 
 
@@ -7,6 +7,7 @@ import numpy as np
 import cv2
 from numpy import load
 import os
+import time
 
 
 # model selection
@@ -46,7 +47,53 @@ for i, id in enumerate(ids):
     mean = load(os.path.join(save_dir, id))
     mean_faces[:, i] = mean[:, 0]
 
+# load face detector
 faceCascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
+
+# load test images
+test_dir = '../cam_cap'
+test_list = os.listdir(test_dir)
+for j, img_name in enumerate(test_list):
+    print(img_name)
+    img_dir = os.path.join(test_dir, img_name)
+    img = cv2.imread(img_dir) # read as b/w
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    faces = faceCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.2,
+        minNeighbors=5,
+        minSize=(20, 20)
+    )
+    for (x,y,w,h) in faces:
+        cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_color = img[y:y+h, x:x+w]
+        input = cv2.resize(roi_gray, (112,112)).reshape(-1,1)
+        input = input - mn
+        test_eig = np.matmul(eigenvecs.T, input).flatten()
+        # cv2.imshow('video', recog_input)
+        ind = 0
+        least = 1000000000
+        for i, template in enumerate(mean_faces.T):
+            # take eucl dist
+            dist = np.linalg.norm(template - test_eig)
+            if dist <= least:
+                least = dist
+                ind = i
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(img, index_key[ind][1], (x, y), font, 0.5, (225, 225, 225), 1)  # test print to bound box
+        cv2.imwrite("../cam_cap/pred{}.jpg".format(j), img)
+
+
+
+
+
+
+
+
+
+
+'''
 cap = cv2.VideoCapture(0)
 cap.set(3,640) # set Width
 cap.set(4,480) # set Height
@@ -60,10 +107,7 @@ while True:
         minNeighbors=5,
         minSize=(20, 20)
     )
-    i = 0
     for (x,y,w,h) in faces:
-        # time.sleep(3)
-        i+=1
         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = img[y:y+h, x:x+w]
@@ -89,3 +133,4 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 
+'''
