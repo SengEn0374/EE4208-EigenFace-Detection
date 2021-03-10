@@ -5,8 +5,8 @@
 pretrained eigenfaces, "cfd__reduced_eigenvecs.npy" in google drive [link](https://drive.google.com/file/d/16HaGSCap8h1REnUy4orzchpSoFCZelFe/view?usp=sharing) 
 
 ### Requirements
--python3.x
--opencv
+- python3.x
+- opencv
 
 ### Instruction
 #### training
@@ -16,7 +16,7 @@ pretrained eigenfaces, "cfd__reduced_eigenvecs.npy" in google drive [link](https
 4. Run mean_face to produce mean of each ID (john_lim_mean.npy) in separate dataset ie data is group according to IDs here. ie John_Lim > John_smile.jpg, John_frown.jpg, ...  
 
 #### testing/prediction
--Run predict live cam py file
+- Run predict live cam py file
 
 ### Running prediction only
--Run predict_live_cam.py
+- Run predict_live_cam.py
