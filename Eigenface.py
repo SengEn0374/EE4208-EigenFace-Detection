@@ -1,15 +1,12 @@
 import numpy as np
-from numpy import savetxt
 from numpy import save
 from numpy import load
 from PIL import Image
 import cv2
-import torch
 import os
 import time
 from matplotlib import pyplot as plt
 
-device = torch.device("cpu")
 
 
 
@@ -61,34 +58,20 @@ def main():
     X = X - mn    # X = RowDataAdjust in lec slides = mean adjusted pixel row matrix
 
     # covariance matrix
-    C = np.matmul(X, X.T) / N
+    C = np.matmul(X, X.T) / N  # X(X.T)
 
-    # why is np.cov(X)    and    formula (1/N)(X)(X.T) differing by 2x ?   2 x np.cov(x) = formula
-    # _C = np.cov(X) / N  # numpy.cov expects an num_dimensions x num_samples array, X is (num_dim, num_samples)
-    # print(C)
-    # print(_C)
     print("Covar mat shape:", C.shape)      # check
 
     # Covar matrix symmetric, (k,k), num_eigvals eigvects = k
     # w = eigen val row vector  [w1, w2, w3]      v = eigen vev col vector matrix   [v1 v2 v3 ..]
     # np.linalg.eigh()  # returns w, v in sorted low to high.     w[i] -> v[ : , i]
 
-    # numpy
-    # start = time.time()
     print("Calculating eigenvectors...")
     w, v = np.linalg.eigh(C)  # bottle neck here
-    # elapsed = time.time() - start
-    # print("np", elapsed)
 
     # change to descending order
     w = np.flip(w)
     v = np.flip(v, axis=1)
-    # print(w)
-
-    # save eig col vectors, and eig val array to CSV
-    # savetxt('eigvec_col.csv', v, delimiter=',')
-    # savetxt('eigval_arr.csv', w, delimiter=',')
-
 
     # find dimensions that has meaning full data ---> eigval > 1
     count = 0
@@ -100,7 +83,6 @@ def main():
     # dimension reduction
     v_reduc = v[:, 0:count]
     save('150_cfd__reduced_eigenvec.npy', v_reduc)  # save in binary for faster access
-    # savetxt('reduce_eigvecs_col.csv', v_reduc, delimiter=',')
     # print(v_reduc.shape)
 
     # get faces in reduced eigen space
@@ -129,46 +111,7 @@ def main():
     return
 
 
-def make_pixel_row_mat(vec_faces_list):
-    '''
-    IE [pixel_1 of all faces,
-        pixel_2 of all faces,
-        .                               ie shape: (num_dim, num_sample)     in this case is (10000, 3)
-        .
-        .
-        pixel_K of all faces]
-    '''
-    for i, face in enumerate(vec_faces_list):
-        if i == 0:
-            X = vec_faces_list[i]
-        else:
-            X = np.append(X, vec_faces_list[i], axis=1)
-    return X
 
-
-# zero mean adjustment
-def mean_adjust(pixel):
-    avg = np.average(pixel)
-    return pixel - avg
-
-
-
-
-'''
-X = np.append(x,y, axis=1)
-X = np.append(X,z, axis=1)
-print(X)
-print(X[0, 1])
-
-X_T = X.T
-print(X_T)
-
-N = len(x)
-
-# Covariance matrix of every pixel's covariances
-C = (1/N) * np.matmul(X, X_T)
-# print(C.shape)
-'''
 
 
 
