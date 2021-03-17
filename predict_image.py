@@ -51,7 +51,7 @@ for i, id in enumerate(ids):
 faceCascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
 
 # load test images
-test_dir = '../cam_cap'
+test_dir = '../test'
 test_list = os.listdir(test_dir)
 for j, img_name in enumerate(test_list):
     print(img_name)
@@ -82,7 +82,8 @@ for j, img_name in enumerate(test_list):
                 ind = i
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(img, index_key[ind][1], (x, y), font, 0.5, (225, 225, 225), 1)  # test print to bound box
-        cv2.imwrite("../cam_cap/pred{}.jpg".format(j), img)
+        print("prediction:", index_key[ind][1])
+        cv2.imwrite("../test/pred{}.jpg".format(j), img)
 
 
 

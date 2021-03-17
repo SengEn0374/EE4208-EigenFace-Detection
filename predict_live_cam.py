@@ -52,6 +52,7 @@ faceCascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
 cap.set(3,640) # set Width
 cap.set(4,480) # set Height
+# j = 0
 while True:
     ret, img = cap.read()
     # img = cv2.flip(img, -1)
@@ -62,10 +63,10 @@ while True:
         minNeighbors=5,
         minSize=(20, 20)
     )
-    i = 0
+    # _x, _y, _w, _h = 0, 0, 0, 0 # for overlap suppression
     for (x,y,w,h) in faces:
-        # time.sleep(3)
-        i+=1
+        # if x > _x and x+w < _x+_w and y > _y and y+h > _y+h:  # if face pred is within another face, ignore this pred
+            # break
         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = img[y:y+h, x:x+w]
@@ -85,6 +86,8 @@ while True:
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(img, index_key[ind][1], (x,y), font, 0.5, (225,225,225), 1)  # test print to bound box
     cv2.imshow('video',img)
+    # cv2.imwrite('./non_max_test/test{}.jpg'.format(j), img)
+    # j += 1
     k = cv2.waitKey(30) & 0xff
     if k == 27: # press 'ESC' to quit
         break
