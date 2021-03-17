@@ -11,7 +11,7 @@ import time
 
 
 # model selection
-model_list = ['24', '120', 'CFD_1207']
+model_list = ['24', '120', 'CFD_1207', 'CFD_alt_eigs']
 model = model_list[2]
 
 # model with 24 eigenfaces, but trained 25 images only
@@ -32,6 +32,11 @@ if model == 'CFD_1207':
     eigenvecs = load("./cfd__reduced_eigenvec.npy")
     save_dir = './cfd_id_mean'
 
+if model == 'CFD_alt_eigs':
+    mn = load('./CFDFaces_mean.npy')
+    eigenvecs = load("./CFD_alt_eigenvecs.npy")
+    save_dir = './cfd_alt_id_mean'
+
 
 # load mean face templates
 ids = os.listdir(save_dir)
@@ -51,7 +56,7 @@ for i, id in enumerate(ids):
 faceCascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
 
 # load test images
-test_dir = '../cam_cap'
+test_dir = '../test'
 test_list = os.listdir(test_dir)
 for j, img_name in enumerate(test_list):
     print(img_name)
@@ -82,7 +87,8 @@ for j, img_name in enumerate(test_list):
                 ind = i
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(img, index_key[ind][1], (x, y), font, 0.5, (225, 225, 225), 1)  # test print to bound box
-        cv2.imwrite("../cam_cap/pred{}.jpg".format(j), img)
+        print("prediction:", index_key[ind][1])
+        cv2.imwrite("../test/pred{}.jpg".format(j), img)
 
 
 
