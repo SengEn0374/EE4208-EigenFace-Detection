@@ -1,5 +1,7 @@
 # EE4208-1
 ## Face Detection and Recognition
+- Pretrained haar cascade face detection
+- PCA face recognition
 
 ### eigenvectors file
 pretrained eigenfaces, "cfd__reduced_eigenvecs.npy" in google drive [link](https://drive.google.com/file/d/16HaGSCap8h1REnUy4orzchpSoFCZelFe/view?usp=sharing) 
